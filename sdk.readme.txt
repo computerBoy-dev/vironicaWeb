@@ -1,0 +1,9 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyA7XlK4qCOp8pzEQ7pQ4b9PZv4cGY5_tzA",
+  authDomain: "vironicawebapp.firebaseapp.com",
+  databaseURL: "https://vironicawebapp-default-rtdb.firebaseio.com",
+  projectId: "vironicawebapp",
+  storageBucket: "vironicawebapp.firebasestorage.app",
+  messagingSenderId: "754565695785",
+  appId: "1:754565695785:web:e05fab8ada8a32d9d84f38"
+};
