@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat -    vironica.ai</title>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <style>
+    /* ✅ Import Google Font */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap');
+
+    /* ✅ Reset Default Styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Inter, sans-serif; }
+
+    /* ✅ Body Styling */
+    body { display: flex; flex-direction: column; height: 100vh; justify-content: space-between; align-items: center; background: url('img/bg.jpg') no-repeat center center/cover; color: white; overflow: hidden; }
+
+    /* ✅ Loader (Loading Screen) */
+    .loader-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 1); backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; opacity: 1; transition: opacity 1s ease-in-out; }
+
+    .loader-text { position: absolute; bottom: 50px; font-size: 16px; color: rgba(255, 255, 255, 0.8); }
+    .dots { display: inline-block; font-size: 16px; letter-spacing: 2px; }
+    .dots::after { content: ''; animation: dots-animation 1.5s infinite steps(1); }
+
+    /* ✅ Dots Animation for Loader */
+    @keyframes dots-animation { 0% { content: '.'; } 33% { content: '..'; } 66% { content: '...'; } 100% { content: ''; } }
+
+    /* ✅ Navbar Styling */
+    .navbar { width: 100%; padding: 15px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.3); position: fixed; top: 0; left: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.2); z-index: 100; }
+    .logo { font-size: 20px; font-weight: bold; color: white; }
+
+    /* ✅ Menu Button */
+    .menu { width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; position: relative; }
+
+    /* ✅ Dropdown Menu */
+    .dropdown { position: absolute; top: 50px; right: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); border-radius: 10px; width: 150px; padding: 10px 0; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); opacity: 0; transform: translateY(-20px); transition: opacity 0.3s ease, transform 0.3s ease; display: none; z-index: 200; }
+
+    .dropdown a { color: white; text-decoration: none; padding: 10px 15px; display: block; transition: background 0.3s; }
+    .dropdown a:hover { background: rgba(255, 255, 255, 0.1); }
+    .dropdown.show { display: block; opacity: 1; transform: translateY(0); }
+
+    /* ✅ Chat Container */
+    .chat-container { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: flex-start; padding: 20px; overflow-y: auto; margin-top: 60px; margin-bottom: 60px; scroll-behavior: smooth; }
+
+    /* ✅ Messages */
+    .message { max-width: 70%; padding: 10px 15px; margin: 5px 0; border-radius: 15px; font-size: 16px; }
+    .chat-container .message:first-child { margin-top: 10px; }
+    .chat-container .message:last-child { margin-bottom: 40px; }
+
+    /* ✅ Message Types */
+    .incoming { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); align-self: flex-start; border-radius: 15px 15px 15px 5px; }
+    .outgoing { background: #7cd2d5; align-self: flex-end; border-radius: 15px 15px 5px 15px; color: black; }
+
+    /* ✅ Input Box */
+    .input-container { width: 100%; display: flex; align-items: center; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 15px; position: fixed; bottom: 0; left: 0; }
+    .chat-input { flex: 1; padding: 15px; border: none; font-size: 16px; background: white; color: black; outline: none; border-radius: 5px; }
+    .send-btn { padding: 15px; border: none; background: #7cd2d5; color: #000; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 5px; margin-left: 10px; }
+
+    /* ✅ Mobile Responsive Adjustments */
+    @media screen and (max-width: 600px) {
+        .navbar { padding: 10px; }
+        .chat-container { padding: 5px; }
+        .input-container { padding: 15px; }
+        .chat-input { font-size: 14px; padding: 12px; }
+        .send-btn { font-size: 14px; padding: 12px; }
+    }
+
+    /* ✅ Blur Effect on Background */
+    body.blur .container, body.blur .navbar, body.blur .chat-container, body.blur .input-container { filter: blur(10px); pointer-events: none; }
+
+    /* ✅ Popup Overlay */
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); z-index: 250; display: none; }
+
+    /* ✅ Popup Window */
+    .popup-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.9); padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); width: 100%; max-width: 350px; color: white; z-index: 300; display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+
+    .popup-container.show { display: block; opacity: 1; }
+    .popup-container * { filter: none !important; }
+
+    /* ✅ Buttons Inside Popup */
+    .clear-btn, .cancel-btn { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .clear-btn { background: #7cd2d5; color: black; }
+    .cancel-btn { background: #fff; color: black; }
+
+    /* ✅ Default Message (Before Chat Starts) */
+    .default-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; font-size: 18px; font-weight: bold; color: white; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); border-radius: 10px; text-align: center; width: 80%; max-width: 400px; animation: fadeIn 0.5s ease-in-out; height: 110px; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .default-message h2 { font-size: 22px; font-weight: bold; }
+    .default-message p { font-size: 14px; opacity: 0.8; margin-top: 5px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="loader-container">
+        <div class="logo">vironica.<span style="color: #7cd2d5;">ai</span></div>
+        <div class="loader-text">Loading<span class="dots"></span></div>
+    </div>
+
+    <div class="navbar">
+        <div class="logo">vironica.<span style="color: #7cd2d5;">ai</span></div>
+        <div class="menu" onclick="toggleMenu()"> 
+            <i class='bx bx-menu'></i>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <a href="#"> <i class="bx bx-message-alt-add"></i>  New Chat</a>
+        <a href="#" style="color: rgb(255, 169, 169);"> <i class="bx bx-message-alt-x"></i> Clear Chat</a>
+    </div>
+
+    <!-- Overlay for Blur Effect -->
+<div id="overlay" class="overlay"></div>
+
+<!-- Popup for Clear Chat Confirmation -->
+    <div id="popup" class="popup-container">
+        <i class="bx bx-error-circle"></i>
+        <p>Clearing chat will also erase your memory and all past conversations. <br><br>To retain memory, start a New Chat instead.</p>
+        <div class="popup-buttons">
+            <button class="clear-btn" onclick="clearChat()">Clear Chat & Memory</button>
+            <button class="cancel-btn" onclick="closePopup()">Cancel</button>
+        </div>
+    </div>
+
+    
+
+    <div class="chat-container">
+        <div class="default-message">
+        </div>
+    </div>
+    
+
+    <div class="input-container">
+        <input type="text" class="chat-input" placeholder="Type a message...">
+        <button class="send-btn"> <i class='bx bx-send'></i></button>
+    </div>
+
+
+    <script src="navbar&loader.js"></script>
+    <script type="module" src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - vironica.ai</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background: url('img/bg.jpg') no-repeat center center/cover;
+            background-position: fixed;
+            color: white;
+            transition: .5s;
+        }
+
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .loader-text {
+            position: absolute;
+            bottom: 50px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dots {
+            display: inline-block;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        @keyframes dots-animation {
+            0% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+            100% { content: ''; }
+        }
+
+        .dots::after {
+            content: '';
+            animation: dots-animation 1.5s infinite steps(1);
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.3);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            outline: none;
+        }
+
+        .input-box:focus {
+            border: 1px solid #7cd2d5;
+        }
+
+        .input-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            background: #7cd2d5;
+            color: black;
+            cursor: pointer;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Overlay Styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .overlay-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 250px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay-box p {
+            color: black;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        
+        .create-account {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #adeaec;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="loader-container">
+        <div class="logo">vironica.<span style="color: #7cd2d5;">ai</span></div>
+        <div class="loader-text">Loading<span class="dots"></span></div>
+    </div>
+
+    <div class="navbar">
+        <div class="logo">vironica.<span style="color: #7cd2d5;">ai</span></div>
+    </div>
+
+    <form class="container" id="signupForm">
+        <h2>Create Account</h2>
+        <input type="email" class="input-box" placeholder="Enter Email" id="username" required autocomplete="off" >
+        <input type="password" class="input-box" placeholder="Create Password" id="password" required autocomplete="off">
+        <button class="login-btn" type="submit">Sign Up</button>
+        <a href="login.html" class="create-account"><div class="create-account">Get started with an existing account</div></a>
+    </form>
+
+    <!-- Overlay Container -->
+    <div class="overlay" id="overlay">
+        <div class="overlay-box">
+            <img src="img/logo.jpg" alt="" height="50px">
+            <p id="overlay-text">Creating account...</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 vironica.ai. All rights reserved.
+    </div>
+
+    <script type="module" src="newaccount.js"></script>
+
+</body>
+</html>
